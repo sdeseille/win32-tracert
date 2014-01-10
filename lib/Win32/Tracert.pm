@@ -7,6 +7,41 @@ use Net::hostent;
 use Socket;
 
 
+sub found{
+    my $hosttocheck=shift;
+    my $tracert_result=shift;
+    my $iptocheck;
+    
+    if ($hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
+        $iptocheck=$hosttocheck;
+    }
+    else{
+        my $h;
+        my $ipadress;
+        if ($h = gethost($hosttocheck)){
+            $ipadress = inet_ntoa($h->addr);
+            $iptocheck=$ipadress;
+        }
+        else{
+            die "$0: no such host: $hosttocheck\n";
+        }
+    }
+    
+    if (exists $tracert_result->{"$iptocheck"}) {
+        if ("$iptocheck" eq $tracert_result->{"$iptocheck"}->{'HOPS'}->[-1]->{'IPADRESS'}) {
+            #I found it
+            return 1;
+        }
+        else{
+            #route to target undetermined
+            return 0;
+        }
+    }
+    else{
+        die "No traceroute result for $hosttocheck\n";
+    }    
+}
+
 sub parse{
     my $arg=shift;
     _parse($arg);
