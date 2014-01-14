@@ -5,13 +5,19 @@ use warnings;
 # ABSTRACT: Call Win32 tracert tool or parse Win32 tracert output;
 use Net::hostent;
 use Socket;
+use Data::Dumper;
 
+sub run{
+    my $hosttocheck=shift;
+    die "Bad format $hosttocheck\n" unless $hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+    my @tracert_output=`tracert $hosttocheck`;
+    return \@tracert_output;
+}
 
 sub found{
     my $hosttocheck=shift;
     my $tracert_result=shift;
     my $iptocheck;
-    
     if ($hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
         $iptocheck=$hosttocheck;
     }
