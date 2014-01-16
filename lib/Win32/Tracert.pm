@@ -7,7 +7,7 @@ use Net::hostent;
 use Socket;
 use Data::Dumper;
 
-sub run{
+sub to_find{
     my $hosttocheck=shift;
     die "Bad format $hosttocheck\n" unless $hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
     my @tracert_output=`tracert $hosttocheck`;
@@ -46,6 +46,13 @@ sub found{
     else{
         die "No traceroute result for $hosttocheck\n";
     }    
+}
+
+sub hops{
+    my $iptocheck=shift;
+    my $tracert_result=shift;
+    print "nombre de saut(s): ",scalar(@{$tracert_result->{"$iptocheck"}->{'HOPS'}}),"\n";
+    return scalar(@{$tracert_result->{"$iptocheck"}->{'HOPS'}});
 }
 
 sub parse{
