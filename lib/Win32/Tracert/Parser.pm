@@ -1,68 +1,70 @@
 package Win32::Tracert;
 use strict;
 use warnings;
-use Object::Tiny qw (destination);
 
 # ABSTRACT: Call Win32 tracert tool or parse Win32 tracert output;
 use Net::hostent;
 use Socket;
 use Data::Dumper;
 
-my @tracert_output;
-my %tracert_result;
-my $iptocheck;
-
-sub _tracert_result{
-    return %tracert_result;
-}
-
-sub _iptocheck{
-    return $iptocheck;
-}
-
 sub to_find{
-    my $self=shift;
-    my $hosttocheck=$self->destination;
-    
+    my $hosttocheck=shift;
+    die "Bad format $hosttocheck\n" unless $hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+    my @tracert_output=`tracert $hosttocheck`;
+    return \@tracert_output;
+}
+
+sub found{
+    my $hosttocheck=shift;
+    my $tracert_result=shift;
+    my $iptocheck;
     if ($hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
-        $iptocheck=$self->destination;
+        $iptocheck=$hosttocheck;
     }
     else{
         my $h;
         my $ipadress;
-        try{
-            if ($h = gethost($hosttocheck)){
-                $ipadress = inet_ntoa($h->addr);
-                $iptocheck=$ipadress;
-            }
-            else{
-                die "$0: no such host: $hosttocheck\n";
-            }
+        if ($h = gethost($hosttocheck)){
+            $ipadress = inet_ntoa($h->addr);
+            $iptocheck=$ipadress;
         }
-        catch {
-            warn "Got a die: $_";
+        else{
+            die "$0: no such host: $hosttocheck\n";
         }
     }
     
-    @tracert_output=`tracert $hosttocheck`;
-    return $self;
+    if (exists $tracert_result->{"$iptocheck"}) {
+        if ("$iptocheck" eq $tracert_result->{"$iptocheck"}->{'HOPS'}->[-1]->{'IPADRESS'}) {
+            #I found it
+            return 1;
+        }
+        else{
+            #route to target undetermined
+            return 0;
+        }
+    }
+    else{
+        die "No traceroute result for $hosttocheck\n";
+    }    
 }
 
-sub raw{
-    my $self=shift;
-    return @tracert_output;
+sub hops{
+    my $iptocheck=shift;
+    my $tracert_result=shift;
+    print "nombre de saut(s): ",scalar(@{$tracert_result->{"$iptocheck"}->{'HOPS'}}),"\n";
+    return scalar(@{$tracert_result->{"$iptocheck"}->{'HOPS'}});
 }
 
 sub parse{
-    my $self=shift;
-    $self->_parse(\@tracert_output);
+    my $arg=shift;
+    _parse($arg);
 }
 
 sub _parse{
-    my $self=shift;
     my $tracert_outpout=shift;
     die "Attending ARRAY REF and got something else ! \n" unless ref($tracert_outpout) eq "ARRAY";
-    #print Dumper $tracert_outpout;
+    
+    my $tracert_result={};
     my $host_targeted;
     my $ip_targeted;
 
@@ -80,7 +82,7 @@ sub _parse{
             $ip_targeted =~ s/(\[|\])//g;
             chomp $ip_targeted;
             #Data Structure initalization with first results
-            $tracert_result{"$ip_targeted"}={'IPADRESS' => "$ip_targeted", 'HOSTNAME' => "$host_targeted", 'HOPS' => []};
+            $tracert_result->{"$ip_targeted"}={'IPADRESS' => "$ip_targeted", 'HOSTNAME' => "$host_targeted", 'HOPS' => []};
             next LINE;
         }
         elsif($curline =~ /^\S+.*\s\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\s/){
@@ -88,7 +90,7 @@ sub _parse{
             $ip_targeted =~ s/.*?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*$/$1/;
             chomp $ip_targeted;
             #Data Structure initalization with first results
-            $tracert_result{"$ip_targeted"}={'IPADRESS' => "$ip_targeted", 'HOPS' => []};
+            $tracert_result->{"$ip_targeted"}={'IPADRESS' => "$ip_targeted", 'HOPS' => []};
             next LINE;
         }
         
@@ -122,46 +124,11 @@ sub _parse{
                           'PACKET3_RT' => $p3_rt,
                            };
             #Each data record is store to table in ascending order 
-            push $tracert_result{"$ip_targeted"}->{'HOPS'}, $hop_data;
+            push $tracert_result->{"$ip_targeted"}->{'HOPS'}, $hop_data;
             next LINE;
         }
     }
-    die "No data found to tracereoute to ",$self->destination unless scalar(@{$tracert_result{"$ip_targeted"}->{'HOPS'}}) >= 1;
-    return $self;
+    return $tracert_result;
 }
-
-sub found{
-    my $self=shift;
-    my $hosttocheck=$self->destination;
-    #my %tracert_result=$self->_tracert_result;
-    #my $iptocheck=$self->_iptocheck;
-
-    if (defined $iptocheck) {
-        if (exists $tracert_result{"$iptocheck"}) {
-            if ("$iptocheck" eq $tracert_result{"$iptocheck"}->{'HOPS'}->[-1]->{'IPADRESS'}) {
-                #I found it
-                return 1;
-            }
-            else{
-                #route to target undetermined
-                return 0;
-            }
-        }
-        else{
-            die "No traceroute result for $hosttocheck\n";
-        }
-    }
-    else{
-        die "Have you forgot to call \$route->to_find method ! ";
-    }
-}
-
-sub hops{
-    my $iptocheck=shift;
-    my $tracert_result=shift;
-    print "nombre de saut(s): ",scalar(@{$tracert_result->{"$iptocheck"}->{'HOPS'}}),"\n";
-    return scalar(@{$tracert_result->{"$iptocheck"}->{'HOPS'}});
-}
-
 
 1;

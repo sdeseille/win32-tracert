@@ -3,21 +3,22 @@ use warnings;
 use Data::Dumper;
 
  
-use Test::More tests => 5;
- 
-use_ok 'Win32::Tracert';
+use Test::More tests => 3;
 
 my $target_ip='127.0.0.1';
 
-my $parse_result=Win32::Tracert::parse(Win32::Tracert::to_find($target_ip));
+use_ok 'Win32::Tracert';
+my $route = Win32::Tracert->new(destination => "$target_ip");
+#print Dumper $route->to_find->parse;
 
-ok(ref($parse_result) eq 'HASH', 'Parsing return an HASH ref');
+$target_ip='10.0.0.2';
+my $route2 = Win32::Tracert->new(destination => "$target_ip");
 
-my $is_determined=Win32::Tracert::found($target_ip,$parse_result);
+ok($route->to_find->parse->found,"Is route Found");
+print "call method: ",$route->destination,"\n";
 
-ok($is_determined, "Route to $target_ip determined");
+my $route3 = Win32::Tracert->new(destination => "buggy");
+$route3->to_find;
 
-ok(Win32::Tracert::hops($target_ip,$parse_result), "Nombre saut");
+ok($route2->to_find->parse->found,"Is route Found");
 
-
-use_ok 'Win32::TracertOO';
