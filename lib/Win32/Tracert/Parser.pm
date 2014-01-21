@@ -1,67 +1,16 @@
-package Win32::Tracert;
+package Win32::Tracert::Parser;
 use strict;
 use warnings;
+use Object::Tiny qw (input);
 
-# ABSTRACT: Call Win32 tracert tool or parse Win32 tracert output;
+
 use Net::hostent;
 use Socket;
 use Data::Dumper;
 
-sub to_find{
-    my $hosttocheck=shift;
-    die "Bad format $hosttocheck\n" unless $hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
-    my @tracert_output=`tracert $hosttocheck`;
-    return \@tracert_output;
-}
-
-sub found{
-    my $hosttocheck=shift;
-    my $tracert_result=shift;
-    my $iptocheck;
-    if ($hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
-        $iptocheck=$hosttocheck;
-    }
-    else{
-        my $h;
-        my $ipadress;
-        if ($h = gethost($hosttocheck)){
-            $ipadress = inet_ntoa($h->addr);
-            $iptocheck=$ipadress;
-        }
-        else{
-            die "$0: no such host: $hosttocheck\n";
-        }
-    }
-    
-    if (exists $tracert_result->{"$iptocheck"}) {
-        if ("$iptocheck" eq $tracert_result->{"$iptocheck"}->{'HOPS'}->[-1]->{'IPADRESS'}) {
-            #I found it
-            return 1;
-        }
-        else{
-            #route to target undetermined
-            return 0;
-        }
-    }
-    else{
-        die "No traceroute result for $hosttocheck\n";
-    }    
-}
-
-sub hops{
-    my $iptocheck=shift;
-    my $tracert_result=shift;
-    print "nombre de saut(s): ",scalar(@{$tracert_result->{"$iptocheck"}->{'HOPS'}}),"\n";
-    return scalar(@{$tracert_result->{"$iptocheck"}->{'HOPS'}});
-}
-
-sub parse{
-    my $arg=shift;
-    _parse($arg);
-}
-
-sub _parse{
-    my $tracert_outpout=shift;
+sub to_parse{
+    my $self=shift;
+    my $tracert_outpout=$self->input;
     die "Attending ARRAY REF and got something else ! \n" unless ref($tracert_outpout) eq "ARRAY";
     
     my $tracert_result={};
