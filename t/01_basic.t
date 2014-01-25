@@ -5,8 +5,8 @@ use Data::Dumper;
  
 use Test::More tests => 2;
 
-my $target='127.0.0.1';
-#my $target='lacunaexpanse.com';
+#my $target='127.0.0.1';
+my $target='lacunaexpanse.com';
 
 use_ok 'Win32::Tracert';
 #use_ok 'Win32::Tracert::Parser';
