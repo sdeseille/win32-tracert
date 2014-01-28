@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 use Data::Dumper;
+use utf8;
+
 
  
 use Test::More tests => 2;
@@ -9,14 +11,23 @@ use Test::More tests => 2;
 my $target='lacunaexpanse.com';
 
 use_ok 'Win32::Tracert';
-#use_ok 'Win32::Tracert::Parser';
 
-my $route = Win32::Tracert->new(destination => "$target");
+#my $route = Win32::Tracert->new(destination => "$target");
+
+my $tracert_output="./t/trace_tracert.txt";
+
+open my $th, '<:encoding(Windows-1252):crlf', "$tracert_output" or die "Impossible de lire le fichier $tracert_output\n";
+my @trace_out=<$th>;
+close $th;
+
+my $route = Win32::Tracert->new(circuit => \@trace_out);
+
 my $path = $route->to_trace;
+
 ok($route->has_found($path),"Is route Found");
 
 print "nombre de saut pour atteindre la destination:",$route->hops($path),"\n";
-print Dumper $path;
+#print Dumper $path;
 
 
 =head

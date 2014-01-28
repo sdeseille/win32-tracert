@@ -14,31 +14,6 @@ my %tracert_result;
 my $iptocheck;
 
 
-sub to_find{
-    my $self=shift;
-    my $hosttocheck=$self->destination;
-    
-    if ($hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
-        $iptocheck=$self->destination;
-    }
-    else{
-        my $h;
-        my $ipadress;
-        
-        if ($h = gethost($hosttocheck)){
-            $ipadress = inet_ntoa($h->addr);
-            $iptocheck=$ipadress;
-        }
-        else{
-            die "$0: no such host: $hosttocheck\n";
-        }
-    }
-    
-    my @tracert_output=`tracert $hosttocheck`;
-    return \@tracert_output;
-}
-
-
 sub _to_find{
     my $self=shift;
     my $hosttocheck=$self->destination;
@@ -59,6 +34,7 @@ sub _to_find{
         }
     }
     
+    #Executing tracert call before to send its result to Parser
     my @tracert_output=`tracert $hosttocheck`;
     return \@tracert_output;
 }
@@ -74,8 +50,16 @@ sub to_trace{
 sub has_found{
     my $self=shift;
     my $tracert_result=shift;
-    my $hosttocheck=$self->destination;
+    
+    my $hosttocheck;
     my $iptocheck;
+    
+    if (defined $self->destination) {
+        $hosttocheck=$self->destination;
+    }
+    else{
+        ($hosttocheck)=keys %{$tracert_result};
+    }
     
     if ($hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
         $iptocheck=$hosttocheck;
@@ -110,11 +94,18 @@ sub has_found{
 sub hops{
     my $self=shift;
     my $tracert_result=shift;
-    my $hosttocheck=$self->destination;
+    my $hosttocheck;
     my $iptocheck;
     
+    if (defined $self->destination) {
+        $hosttocheck=$self->destination;
+    }
+    else{
+        ($hosttocheck)=keys %{$tracert_result};
+    }
+    
     if ($hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
-        $iptocheck=$self->destination;
+        $iptocheck=$hosttocheck;
     }
     else{
         my $h;
