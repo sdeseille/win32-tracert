@@ -26,7 +26,7 @@ sub to_parse{
         #We looking for the target (NB: It is only sure with IP V4 Adress )
         #If we have DNS solving we record hostname and IP Adress
         #Else we keep only IP Adress
-        if ($curline =~ /^\S+.*\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\]/) {
+        if ($curline =~ /^\S+.*\[(?:\d{1,3}\.){3}\d{1,3}\]/) {
             ($host_targeted,$ip_targeted)=(split(/\s/, $curline))[-2..-1];
             $ip_targeted =~ s/(\[|\])//g;
             chomp $ip_targeted;
@@ -34,9 +34,9 @@ sub to_parse{
             $tracert_result->{"$ip_targeted"}={'IPADRESS' => "$ip_targeted", 'HOSTNAME' => "$host_targeted", 'HOPS' => []};
             next LINE;
         }
-        elsif($curline =~ /^\S+.*\s\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\s/){
+        elsif($curline =~ /^\S+.*\s(?:\d{1,3}\.){3}\d{1,3}\s/){
             $ip_targeted = $curline;
-            $ip_targeted =~ s/.*?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*$/$1/;
+            $ip_targeted =~ s/.*?((?:\d{1,3}\.){3}\d{1,3}).*$/$1/;
             chomp $ip_targeted;
             #Data Structure initalization with first results
             $tracert_result->{"$ip_targeted"}={'IPADRESS' => "$ip_targeted", 'HOPS' => []};
@@ -50,11 +50,11 @@ sub to_parse{
             #We split Hop result to create and feed our data structure
             my (undef, $hopnb, $p1_rt, $p1_ut, $p2_rt, $p2_ut, $p3_rt, $p3_ut, $hop_identity) = split(/\s+/,$curline,9);
             #If we have hostname and IP Adress we keep all else we have only IP Adress to keep
-            if ($hop_identity =~ /.*\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\]/) {
+            if ($hop_identity =~ /.*\[(?:\d{1,3}\.){3}\d{1,3}\]/) {
                 $hop_identity =~ s/(\[|\])//g;
                 ($hop_host,$hop_ip)=split(/\s+/, $hop_identity);
             }
-            elsif($hop_identity =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/){
+            elsif($hop_identity =~ /(?:\d{1,3}\.){3}\d{1,3}/){
                 $hop_ip=$hop_identity;
                 $hop_ip =~ s/\s//g;
             }

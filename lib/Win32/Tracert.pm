@@ -18,7 +18,7 @@ sub _to_find{
     my $self=shift;
     my $hosttocheck=$self->destination;
     
-    if ($hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
+    if ($hosttocheck =~ /(?:\d{1,3}\.){3}\d{1,3}/) {
         $iptocheck=$self->destination;
     }
     else{
@@ -61,7 +61,7 @@ sub has_found{
         ($hosttocheck)=keys %{$tracert_result};
     }
     
-    if ($hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
+    if ($hosttocheck =~ /(?:\d{1,3}\.){3}\d{1,3}/) {
         $iptocheck=$hosttocheck;
     }
     else{
@@ -104,7 +104,7 @@ sub hops{
         ($hosttocheck)=keys %{$tracert_result};
     }
     
-    if ($hosttocheck =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
+    if ($hosttocheck =~ /(?:\d{1,3}\.){3}\d{1,3}/) {
         $iptocheck=$hosttocheck;
     }
     else{
