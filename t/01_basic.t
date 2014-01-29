@@ -27,7 +27,7 @@ my $path = $route->to_trace;
 ok($route->has_found($path),"Is route Found");
 
 print "nombre de saut pour atteindre la destination:",$route->hops($path),"\n";
-#print Dumper $path;
+print Dumper $path;
 
 
 =head

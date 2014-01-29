@@ -45,7 +45,7 @@ sub to_parse{
         
         my $hop_data;
         #Working on HOPS to reach Target
-        if ($curline =~ /^\s+\d+\s+(?:\<1|\d+)\sms\s+(?:\<1|\d+)\sms\s+(?:\<1|\d+)\sms\s+.*$/) {
+        if ($curline =~ /^\s+\d+(?:\s+(?:\<1|\d+)\sms){3}\s+.*$/) {
             my $hop_ip;
             my $hop_host="NA";
             #We split Hop result to create and feed our data structure
@@ -77,7 +77,24 @@ sub to_parse{
             push $tracert_result->{"$ip_targeted"}->{'HOPS'}, $hop_data;
             next LINE;
         }
-        elsif ($curline =~ /^\s+\d+\s+\*\s+\*\s+\*\s+.*$/){
+        elsif ($curline =~ /^\s+\d+\s+(?:\*\s+){3}.*$/){
+            my $hop_ip="NA";
+            my $hop_host="NA";
+            #We split Hop result to create and feed our data structure
+            my (undef, $hopnb, $p1_rt, $p2_rt, $p3_rt, $hop_identity) = split(/\s+/,$curline,6);
+            #We store our data across hashtable reference
+            $hop_data={'HOPID' => $hopnb,
+                          'HOSTNAME' => $hop_host,
+                          'IPADRESS' => $hop_ip,
+                          'PACKET1_RT' => $p1_rt,
+                          'PACKET2_RT' => $p2_rt,
+                          'PACKET3_RT' => $p3_rt,
+                           };
+            #Each data record is store to table in ascending order 
+            push $tracert_result->{"$ip_targeted"}->{'HOPS'}, $hop_data;
+            next LINE;
+        }
+        elsif ($curline =~ /^\s+\d+\s+(?:\*\s+){3}.*$/){
             my $hop_ip="NA";
             my $hop_host="NA";
             #We split Hop result to create and feed our data structure
