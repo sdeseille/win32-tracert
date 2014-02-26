@@ -5,7 +5,7 @@ use utf8;
 
 
  
-use Test::More tests => 2;
+use Test::More tests => 7;
 
 #my $target='127.0.0.1';
 my $target='lacunaexpanse.com';
@@ -21,13 +21,19 @@ my @trace_out=<$th>;
 close $th;
 
 my $route = Win32::Tracert->new(circuit => \@trace_out);
+isa_ok($route,'Win32::Tracert');
 
+can_ok($route,'to_trace');
 my $path = $route->to_trace;
 
+can_ok($route,'has_found');
 ok($route->has_found($path),"Is route Found");
 
-print "nombre de saut pour atteindre la destination:",$route->hops($path),"\n";
-print Dumper $path;
+can_ok($route,'hops');
+is ($route->hops($path),28,"Hops number to reach destination");
+
+#print "nombre de saut pour atteindre la destination:",$route->hops($path),"\n";
+#print Dumper $path;
 
 
 =head

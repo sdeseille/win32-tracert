@@ -94,11 +94,26 @@ sub to_parse{
             push $tracert_result->{"$ip_targeted"}->{'HOPS'}, $hop_data;
             next LINE;
         }
-        elsif ($curline =~ /^\s+\d+\s+(?:\*\s+){3}.*$/){
+        elsif ($curline =~ /^\s+\d+\s+\*\s+(?:\s+(?:\<1|\d+)\sms){2}.*$/){
             my $hop_ip="NA";
             my $hop_host="NA";
             #We split Hop result to create and feed our data structure
-            my (undef, $hopnb, $p1_rt, $p2_rt, $p3_rt, $hop_identity) = split(/\s+/,$curline,6);
+            my (undef, $hopnb, $p1_rt, $p2_rt, $p2_ut, $p3_rt, $p3_ut, $hop_identity) = split(/\s+/,$curline,6);
+            
+            #If we have hostname and IP Adress we keep all else we have only IP Adress to keep
+            if ($hop_identity =~ /.*\[(?:\d{1,3}\.){3}\d{1,3}\]/) {
+                $hop_identity =~ s/(\[|\])//g;
+                ($hop_host,$hop_ip)=split(/\s+/, $hop_identity);
+            }
+            elsif($hop_identity =~ /(?:\d{1,3}\.){3}\d{1,3}/){
+                $hop_ip=$hop_identity;
+                $hop_ip =~ s/\s//g;
+            }
+            else{
+                die "Bad format $hop_identity\n";
+            }
+            #Cleaning IP data to be sure not to have carriage return
+            chomp $hop_ip;
             #We store our data across hashtable reference
             $hop_data={'HOPID' => $hopnb,
                           'HOSTNAME' => $hop_host,
