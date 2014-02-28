@@ -5,18 +5,22 @@ use utf8;
 
 
  
-use Test::More tests => 5;
+use Test::More tests => 3;
+
+my $target='127.0.0.1';
 
 use_ok 'Win32::Tracert';
 
-my $route = new_ok('Win32::Tracert');
+my $route = Win32::Tracert->new(destination => "$target");
 
-can_ok($route,'to_trace');
+my $path = $route->to_trace;
 
-can_ok($route,'has_found');
+ok($route->has_found($path),"Is route Found");
 
-can_ok($route,'hops');
+is ($route->hops($path),1,"Hops number to reach destination");
 
+#print "nombre de saut pour atteindre la destination:",$route->hops($path),"\n";
+#print Dumper $path;
 
 
 
