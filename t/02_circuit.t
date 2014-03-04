@@ -20,7 +20,7 @@ isa_ok($route,'Win32::Tracert');
 
 my $path = $route->to_trace;
 
-ok($route->has_found($path),"Is route Found");
+ok($route->found($path),"Is route Found");
 
 is ($route->hops($path),28,"Hops number to reach destination");
 

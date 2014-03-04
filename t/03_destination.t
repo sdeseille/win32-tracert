@@ -15,7 +15,7 @@ my $route = Win32::Tracert->new(destination => "$target");
 
 my $path = $route->to_trace;
 
-ok($route->has_found($path),"Is route Found");
+ok($route->found($path),"Is route Found");
 
 is ($route->hops($path),1,"Hops number to reach destination");
 

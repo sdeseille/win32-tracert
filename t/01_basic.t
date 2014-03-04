@@ -1,11 +1,8 @@
 use strict;
 use warnings;
-use Data::Dumper;
-use utf8;
-
 
  
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 use_ok 'Win32::Tracert';
 
@@ -13,11 +10,11 @@ my $route = new_ok('Win32::Tracert');
 
 can_ok($route,'to_trace');
 
-can_ok($route,'has_found');
+can_ok($route,'found');
 
 can_ok($route,'hops');
 
-
+my $parser_object=new_ok('Win32::Tracert::Parser');
 
 
 
