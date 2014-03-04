@@ -18,11 +18,11 @@ close $th;
 my $route = Win32::Tracert->new(circuit => \@trace_out);
 isa_ok($route,'Win32::Tracert');
 
-my $path = $route->to_trace;
+$route->to_trace;
 
-ok($route->found($path),"Is route Found");
+ok($route->found(),"Is route Found");
 
-is ($route->hops($path),28,"Hops number to reach destination");
+is ($route->hops(),28,"Hops number to reach destination");
 
 my $path_witness = {
           '68.178.254.85' => {
@@ -257,7 +257,7 @@ my $path_witness = {
                            }
         };
 
-is_deeply( $path, $path_witness, 'Path deeply comparison' );
+is_deeply( $route->path(), $path_witness, 'Path deeply comparison' );
 
 #print "nombre de saut pour atteindre la destination:",$route->hops($path),"\n";
 #print Dumper $path;

@@ -1,23 +1,30 @@
 package Win32::Tracert;
 use strict;
 use warnings;
+
+use Net::hostent;
+use Socket;
 use Object::Tiny qw (destination circuit);
 use Win32::Tracert::Parser;
 
 # ABSTRACT: Call Win32 tracert tool or parse Win32 tracert output;
 
-
-use Net::hostent;
-use Socket;
-use Data::Dumper;
-
-#my @tracert_output;
 my %tracert_result;
-my $iptocheck;
+#my $iptocheck;
+
+sub path {
+    my ($self,$value)=@_;
+    if (@_ == 2) {
+        $self->{path}=$value;
+    }
+    
+    return $self->{path};
+}
 
 sub _to_find{
     my $self=shift;
     my $hosttocheck=$self->destination;
+    my $iptocheck;
     
     if ($hosttocheck =~ /(?:\d{1,3}\.){3}\d{1,3}/) {
         $iptocheck=$self->destination;
@@ -34,9 +41,10 @@ sub _to_find{
             die "$0: no such host: $hosttocheck\n";
         }
     }
-    
+
     #Executing tracert call before to send its result to Parser
     my @tracert_output=`tracert $hosttocheck`;
+
     return \@tracert_output;
 }
 
@@ -68,12 +76,15 @@ sub to_trace{
     my $result = defined $self->destination ? $self->_to_find : $self->circuit ;
     my $path=Win32::Tracert::Parser->new(input => $result);
     
-    return $self, $path->to_parse;
+    my $parsed_path=$path->to_parse;
+    $self->path($parsed_path);
+    
+    return $self;
 }
 
 sub found{
     my $self=shift;
-    my $tracert_result=shift;
+    my $tracert_result=$self->path();
     
     my $hosttocheck;
     my $iptocheck;
@@ -90,11 +101,11 @@ sub found{
     if (exists $tracert_result->{"$iptocheck"}) {
         if ("$iptocheck" eq $tracert_result->{"$iptocheck"}->{'HOPS'}->[-1]->{'IPADRESS'}) {
             #I found it
-            return 1;
+            return $self;
         }
         else{
             #route to target undetermined
-            return 0;
+            return undef;
         }
     }
     else{
@@ -104,7 +115,7 @@ sub found{
 
 sub hops{
     my $self=shift;
-    my $tracert_result=shift;
+    my $tracert_result=$self->path();
     my $hosttocheck;
     my $iptocheck;
     
@@ -114,7 +125,6 @@ sub hops{
     else{
         ($hosttocheck)=keys %{$tracert_result};
     }
-    
     $iptocheck=$self->_get_target_ip($hosttocheck);
 
     return scalar(@{$tracert_result->{"$iptocheck"}->{'HOPS'}});
@@ -133,9 +143,7 @@ sub graph_ip{
     else{
         ($hosttocheck)=keys %{$tracert_result};
     }
-    
     $iptocheck=$self->_get_target_ip($hosttocheck);
-    
 }
 
 sub graph_hostname{
@@ -151,15 +159,16 @@ sub graph_hostname{
     else{
         ($hosttocheck)=keys %{$tracert_result};
     }
-    
     $iptocheck=$self->_get_target_ip($hosttocheck);
 }
+
 1;
 
 =head1 SYNOPSIS
 
 use Win32::Tracert;
 
+my $target = "127.0.0.1";
 my $route = Win32::Tracert->new(destination => "$target");
 
 my $path = $route->to_trace;
