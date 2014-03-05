@@ -10,7 +10,6 @@ use Win32::Tracert::Parser;
 # ABSTRACT: Call Win32 tracert tool or parse Win32 tracert output;
 
 my %tracert_result;
-#my $iptocheck;
 
 sub path {
     my ($self,$value)=@_;
@@ -19,6 +18,20 @@ sub path {
     }
     
     return $self->{path};
+}
+
+sub _destination_ip{
+    my ($self,$value)=@_;
+    if (@_ == 2) {
+        $self->{_destination_ip}=$value;
+    }
+    
+    return $self->{_destination_ip};
+}
+
+sub destination_ip{
+    my $self=shift;
+    return $self->_destination_ip;
 }
 
 sub _to_find{
@@ -76,8 +89,7 @@ sub to_trace{
     my $result = defined $self->destination ? $self->_to_find : $self->circuit ;
     my $path=Win32::Tracert::Parser->new(input => $result);
     
-    my $parsed_path=$path->to_parse;
-    $self->path($parsed_path);
+    $self->path($path->to_parse);
     
     return $self;
 }
@@ -100,6 +112,7 @@ sub found{
     
     if (exists $tracert_result->{"$iptocheck"}) {
         if ("$iptocheck" eq $tracert_result->{"$iptocheck"}->{'HOPS'}->[-1]->{'IPADRESS'}) {
+            $self->_destination_ip($tracert_result->{"$iptocheck"}->{'HOPS'}->[-1]->{'IPADRESS'});
             #I found it
             return $self;
         }
