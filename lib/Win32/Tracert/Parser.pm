@@ -47,7 +47,7 @@ sub to_parse{
         #Working on HOPS to reach Target
         if ($curline =~ /^\s+\d+(?:\s+(?:\<1|\d+)\sms){3}\s+.*$/) {
             my $hop_ip;
-            my $hop_host="NA";
+            my $hop_host="N/A";
             #We split Hop result to create and feed our data structure
             my (undef, $hopnb, $p1_rt, $p1_ut, $p2_rt, $p2_ut, $p3_rt, $p3_ut, $hop_identity) = split(/\s+/,$curline,9);
             #If we have hostname and IP Adress we keep all else we have only IP Adress to keep

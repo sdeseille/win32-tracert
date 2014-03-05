@@ -20,6 +20,20 @@ sub path {
     return $self->{path};
 }
 
+sub _destination_hostname{
+    my ($self,$value)=@_;
+    if (@_ == 2) {
+        $self->{_destination_hostname}=$value;
+    }
+    
+    return $self->{_destination_hostname};
+}
+
+sub destination_hostname{
+    my $self=shift;
+    return $self->_destination_hostname;
+}
+
 sub _destination_ip{
     my ($self,$value)=@_;
     if (@_ == 2) {
@@ -89,6 +103,7 @@ sub to_trace{
     my $result = defined $self->destination ? $self->_to_find : $self->circuit ;
     my $path=Win32::Tracert::Parser->new(input => $result);
     
+    #put returned result from [to_parse] method in current [path] attribute
     $self->path($path->to_parse);
     
     return $self;
@@ -112,8 +127,10 @@ sub found{
     
     if (exists $tracert_result->{"$iptocheck"}) {
         if ("$iptocheck" eq $tracert_result->{"$iptocheck"}->{'HOPS'}->[-1]->{'IPADRESS'}) {
+            #If we find path to destination we can initialise following private writable attributes 
             $self->_destination_ip($tracert_result->{"$iptocheck"}->{'HOPS'}->[-1]->{'IPADRESS'});
-            #I found it
+            $self->_destination_hostname($tracert_result->{"$iptocheck"}->{'HOPS'}->[-1]->{'HOSTNAME'});
+            
             return $self;
         }
         else{
@@ -143,37 +160,6 @@ sub hops{
     return scalar(@{$tracert_result->{"$iptocheck"}->{'HOPS'}});
 }
 
-sub graph_ip{
-    my $self=shift;
-    my $tracert_result=shift;
-    
-    my $hosttocheck;
-    my $iptocheck;
-    
-    if (defined $self->destination) {
-        $hosttocheck=$self->destination;
-    }
-    else{
-        ($hosttocheck)=keys %{$tracert_result};
-    }
-    $iptocheck=$self->_get_target_ip($hosttocheck);
-}
-
-sub graph_hostname{
-    my $self=shift;
-    my $tracert_result=shift;
-    
-    my $hosttocheck;
-    my $iptocheck;
-    
-    if (defined $self->destination) {
-        $hosttocheck=$self->destination;
-    }
-    else{
-        ($hosttocheck)=keys %{$tracert_result};
-    }
-    $iptocheck=$self->_get_target_ip($hosttocheck);
-}
 
 1;
 
@@ -186,8 +172,8 @@ my $route = Win32::Tracert->new(destination => "$target");
 
 my $path = $route->to_trace;
 
-if ($route->found($path)){
-    my $hops = $route->hops($path);
+if ($route->found){
+    my $hops = $route->hops;
     if($hops >= 1) {
         print "I got it\n"
     }
