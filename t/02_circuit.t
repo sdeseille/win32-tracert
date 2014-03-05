@@ -42,7 +42,7 @@ my $path_witness = {
                                            'IPADRESS' => '172.18.160.49',
                                            'PACKET2_RT' => '<1',
                                            'PACKET1_RT' => '<1',
-                                           'HOSTNAME' => 'NA',
+                                           'HOSTNAME' => 'N/A',
                                            'HOPID' => '2'
                                          },
                                          {
@@ -74,7 +74,7 @@ my $path_witness = {
                                            'IPADRESS' => '81.54.103.177',
                                            'PACKET2_RT' => '<1',
                                            'PACKET1_RT' => '<1',
-                                           'HOSTNAME' => 'NA',
+                                           'HOSTNAME' => 'N/A',
                                            'HOPID' => '6'
                                          },
                                          {
@@ -90,7 +90,7 @@ my $path_witness = {
                                            'IPADRESS' => '193.253.14.29',
                                            'PACKET2_RT' => '<1',
                                            'PACKET1_RT' => '1',
-                                           'HOSTNAME' => 'NA',
+                                           'HOSTNAME' => 'N/A',
                                            'HOPID' => '8'
                                          },
                                          {
@@ -114,7 +114,7 @@ my $path_witness = {
                                            'IPADRESS' => '81.253.184.178',
                                            'PACKET2_RT' => '2',
                                            'PACKET1_RT' => '2',
-                                           'HOSTNAME' => 'NA',
+                                           'HOSTNAME' => 'N/A',
                                            'HOPID' => '11'
                                          },
                                          {
@@ -167,10 +167,10 @@ my $path_witness = {
                                          },
                                          {
                                            'PACKET3_RT' => '*',
-                                           'IPADRESS' => 'NA',
+                                           'IPADRESS' => 'N/A',
                                            'PACKET2_RT' => '*',
                                            'PACKET1_RT' => '*',
-                                           'HOSTNAME' => 'NA',
+                                           'HOSTNAME' => 'N/A',
                                            'HOPID' => '18'
                                          },
                                          {
