@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Net::hostent;
-use Socket;
+use Socket qw ();
 use Object::Tiny qw (destination circuit);
 use Win32::Tracert::Parser;
 
