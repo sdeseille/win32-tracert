@@ -78,8 +78,8 @@ sub to_parse{
             next LINE;
         }
         elsif ($curline =~ /^\s+\d+\s+(?:\*\s+){3}.*$/){
-            my $hop_ip="NA";
-            my $hop_host="NA";
+            my $hop_ip='N/A';
+            my $hop_host='N/A';
             #We split Hop result to create and feed our data structure
             my (undef, $hopnb, $p1_rt, $p2_rt, $p3_rt, $hop_identity) = split(/\s+/,$curline,6);
             #We store our data across hashtable reference
