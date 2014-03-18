@@ -179,13 +179,49 @@ if ($route->found){
     }
 }
 
-=method method_x
 
-This method does something experimental.
 
-=method method_y
+=attribute circuit
 
-This method returns a reason.
+This attribute is used as argument before creating object.
+It contain the result of tracert output slurp from file.
+The result must be in array and dereferenced
+
+=attribute destination
+
+This attribute is used as argument before creating object.
+It containt IP adress or Hostname used by tracert to
+trace the path.
+
+=attribute path
+
+This attribute is a mutator. It set its value if you pass an argument to it.
+Otherwise it return its current value like a standard get method.
+Path is call and set in S<to_trace> method. 
+
+=attribute destination_hostname
+
+This attribute returns the destination hostname.
+This information is defined if a route is found to destination.
+
+=attribute destination_ip
+
+This attribute returns the destination ip address.
+This information is defined if a route is found to destination.
+
+=method to_trace
+
+This method create a Win32::Tracert::Parser object from S<destination> or  S<circuit> attribute.
+it set S<path> attribute with the value return by S<to_parse> method from Win32::Tracert::Parser object 
+
+=method found
+
+This method check from tracert result if we reach the target destination.
+
+=method hops
+
+This method returns number of hops followed by tracert to reach destination.
+value returned is a scalar.
 
 =head1 SEE ALSO
 
