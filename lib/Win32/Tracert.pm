@@ -163,50 +163,56 @@ sub hops{
 
 1;
 
+=encoding utf8
+
 =head1 SYNOPSIS
 
-use Win32::Tracert;
+    use Win32::Tracert;
 
-my $target = "127.0.0.1";
-my $route = Win32::Tracert->new(destination => "$target");
+    my $target = "127.0.0.1";
+    my $route = Win32::Tracert->new(destination => "$target");
+    my $path = $route->to_trace;
 
-my $path = $route->to_trace;
-
-if ($route->found){
-    my $hops = $route->hops;
-    if($hops >= 1) {
-        print "I got it\n"
+    if ($route->found){
+        my $hops = $route->hops;
+        if($hops >= 1) {
+            print "I got it\n"
+        }
     }
-}
 
+    
+=head2 Attributes
+    
+=over 1
 
-
-=attribute circuit
+=item *circuit
 
 This attribute is used as argument before creating object.
 It contain the result of tracert output slurp from file.
 The result must be in array and dereferenced
 
-=attribute destination
+=item *destination
 
 This attribute is used as argument before creating object.
 It containt IP adress or Hostname used by tracert to
 trace the path.
 
-=attribute path
+=back
 
-This attribute is a mutator. It set its value if you pass an argument to it.
+=method path
+
+This method is a mutator. It set its value if you pass an argument to it.
 Otherwise it return its current value like a standard get method.
 Path is call and set in S<to_trace> method. 
 
-=attribute destination_hostname
+=method destination_hostname
 
-This attribute returns the destination hostname.
+This method returns the destination hostname.
 This information is defined if a route is found to destination.
 
-=attribute destination_ip
+=method destination_ip
 
-This attribute returns the destination ip address.
+This method returns the destination ip address.
 This information is defined if a route is found to destination.
 
 =method to_trace
