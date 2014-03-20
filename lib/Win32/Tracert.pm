@@ -11,6 +11,17 @@ use Win32::Tracert::Parser;
 
 my %tracert_result;
 
+#redefine constuctor
+sub new {
+    my $class = shift;
+    my $self  = $class->SUPER::new( @_ );
+    # Extra checking and such
+    die "constructor can't accept circuit and destination together" if ((defined $self->circuit) && (defined $self->destination));
+    return $self;
+}
+
+
+
 sub path {
     my ($self,$value)=@_;
     if (@_ == 2) {
@@ -100,6 +111,7 @@ sub _get_target_ip{
 
 sub to_trace{
     my $self=shift;
+    
     my $result = defined $self->destination ? $self->_to_find : $self->circuit ;
     my $path=Win32::Tracert::Parser->new(input => $result);
     
@@ -171,15 +183,15 @@ sub hops{
 
     my $target = "127.0.0.1";
     my $route = Win32::Tracert->new(destination => "$target");
-    my $path = $route->to_trace;
-
-    if ($route->found){
-        my $hops = $route->hops;
-        if($hops >= 1) {
-            print "I got it\n"
+    
+    if ($route->to_trace->found){
+        my $hops_value=$route->hops;
+        if($hops_value >= 1) {
+            print $route->destination_ip,"\n";
+            print $route->destination_hostname,"\n";
+            print "I got it\n";
         }
     }
-
     
 =head2 Attributes
     
@@ -227,7 +239,7 @@ This method check from tracert result if we reach the target destination.
 =method hops
 
 This method returns number of hops followed by tracert to reach destination.
-value returned is a scalar.
+Value returned is a scalar.
 
 =head1 SEE ALSO
 
