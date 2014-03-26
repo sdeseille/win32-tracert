@@ -16,6 +16,8 @@ sub new {
     my $class = shift;
     my $self  = $class->SUPER::new( @_ );
     # Extra checking and such
+    die "Attribute circuit have to contain a Tracert result" if (((! defined $self->circuit) || (scalar($self->circuit) == 0)) && (! defined $self->destination));
+    die "Attribute destination have to contain a hostname or IP address" if ((! defined $self->destination) && (! defined $self->circuit));
     die "constructor can't accept circuit and destination together" if ((defined $self->circuit) && (defined $self->destination));
     return $self;
 }
@@ -76,7 +78,7 @@ sub _to_find{
             $iptocheck=$ipadress;
         }
         else{
-            die "$0: no such host: $hosttocheck\n";
+            die "No such host: $hosttocheck\n";
         }
     }
 
@@ -102,7 +104,7 @@ sub _get_target_ip{
             $iptocheck=$ipadress;
         }
         else{
-            die "$0: no such host: $hosttocheck\n";
+            die "No such host: $hosttocheck\n";
         }
     }
     
