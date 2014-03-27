@@ -16,9 +16,11 @@ sub new {
     my $class = shift;
     my $self  = $class->SUPER::new( @_ );
     # Extra checking and such
-    die "Attribute circuit have to contain a Tracert result" if (((! defined $self->circuit) || (scalar($self->circuit) == 0)) && (! defined $self->destination));
-    die "Attribute destination have to contain a hostname or IP address" if ((! defined $self->destination) && (! defined $self->circuit));
-    die "constructor can't accept circuit and destination together" if ((defined $self->circuit) && (defined $self->destination));
+    die "You must define [destination] attribute or [circuit] attribute" if ((! defined $self->destination) && (! defined $self->circuit));
+    die "constructor can't accept [circuit] and [destination] together" if ((defined $self->circuit) && (defined $self->destination));
+    die "Attribute [circuit] have to contain a Tracert result" if ((! defined $self->destination) && (scalar(@{$self->circuit}) == 0));
+    die "Attribute [destination] have to contain a hostname or IP address" if ((! defined $self->circuit) && ($self->destination eq ""));
+    
     return $self;
 }
 
