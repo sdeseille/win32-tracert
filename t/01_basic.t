@@ -5,8 +5,8 @@ use warnings;
 use Test::More tests => 7;
 
 use_ok 'Win32::Tracert';
-
-my $route = new_ok('Win32::Tracert');
+my @objargs=(destination => "127.0.0.1");
+my $route = new_ok('Win32::Tracert', \@objargs);
 
 can_ok($route,'to_trace');
 
