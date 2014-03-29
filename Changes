@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    * clean unuseful code (Improve my knowledge on Dist:Zilla)
+        - Remove use Data::Printer in 04_weird_use.t
+        - Remove use Data::Dumper in Parser.pm
 
 0.002     2014-03-29 00:30:54+01:00 Europe/Paris
 
