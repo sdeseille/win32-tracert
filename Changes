@@ -1,6 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    * clean tests files
+        - Skip tests associated with [destination] attribute if system is not MSWin32.
+          We should be able to use that module event if we are not on MSWin32.
+          It is possible when creating object with circuit attribute.
 
 0.003     2014-03-29 16:33:15+01:00 Europe/Paris
     * clean unuseful code (Improve my knowledge on Dist:Zilla)
