@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.004     2014-03-31 21:24:35+02:00 Europe/Paris
     * clean tests files
         - Skip tests associated with [destination] attribute if system is not MSWin32.
           We should be able to use that module event if we are not on MSWin32.
