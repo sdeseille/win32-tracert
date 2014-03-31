@@ -29,10 +29,15 @@ my $target_empty='';
 eval {my $route3 = Win32::Tracert->new(destination => "$target_empty")};
 ok(defined $@, "Yes ! Constructor die if [destination] attribute is empty");
 
+SKIP:
+{
+    eval {die if ($^O ne 'MSWin32')};
+    skip( 'Because [destination] attribute require Win32 system in order to call tracert command', 1 ) if $@;
+    my $route = Win32::Tracert->new(destination => "$target");
+    eval {$route->to_trace};
+    ok(defined $@, "Yes ! Host $target doesn't exist");
+}
 
-my $route = Win32::Tracert->new(destination => "$target");
-eval {$route->to_trace};
-ok(defined $@, "Yes ! Host $target doesn't exist");
 
 
 my $route2 = Win32::Tracert->new(circuit => \@trace_out);
