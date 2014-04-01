@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.005     2014-04-01 22:32:01+02:00 Europe/Paris
     * clean POD
         - cosmetic update, remove semicolon at the end of NAME section
           (Thanks to dolmen@cpan.org for his advices)
