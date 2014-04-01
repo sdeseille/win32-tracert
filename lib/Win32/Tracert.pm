@@ -7,7 +7,7 @@ use Socket qw ();
 use Object::Tiny qw (destination circuit);
 use Win32::Tracert::Parser;
 
-# ABSTRACT: Call Win32 tracert tool or parse Win32 tracert output;
+# ABSTRACT: Call Win32 tracert tool or parse Win32 tracert output
 
 my %tracert_result;
 

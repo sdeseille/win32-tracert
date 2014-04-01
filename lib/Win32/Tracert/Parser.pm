@@ -1,11 +1,12 @@
 package Win32::Tracert::Parser;
 use strict;
 use warnings;
-use Object::Tiny qw (input);
 
-# ABSTRACT: Parser object used by method B<to_trace> in Win32::Tracert;
+use Object::Tiny qw (input);
 use Net::hostent;
 use Socket;
+
+# ABSTRACT: Parser object used by method B<to_trace> in Win32::Tracert
 
 sub to_parse{
     my $self=shift;
