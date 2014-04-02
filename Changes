@@ -1,6 +1,11 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    * Remove git push and reuse NextRelease
+        - i don't succed to set it correctly
+        - precedently remove [NextRelease] plugin by misunderstood its action
+
+0.006     2014-04-02 23:46:01+02:00 Europe/Paris
     * integration with GitHub
         - Add automatic version number in Module
         - Add automatic version number in POD
