@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.007     2014-04-03 00:08:54+02:00 Europe/Paris
     * Remove git push and reuse NextRelease
         - i don't succed to set it correctly
         - precedently remove [NextRelease] plugin by misunderstood its action
