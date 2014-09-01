@@ -9,6 +9,7 @@ use Object::Tiny qw (input);
 
 sub average_responsetime_for{
     my ($self,$packet_sample)=@_;
+    die "Attending HASH REF and got something else ! \n" unless ref($self->input) eq "HASH";
     
     foreach my $ipaddress (keys %{$self->input}){
         my %responsetime_sample=map {$_->{HOPID} => _rounding_value_to_1($_->{$packet_sample})} @{$self->input->{$ipaddress}{HOPS}};
