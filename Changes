@@ -3,6 +3,7 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
     * Get some statistics from Win32::Tracert path
         - Add Statistics module to the distribution
+        - Add 05_statistics.t test file
 
 0.008     2014-04-03 00:17:41+02:00 Europe/Paris
     * Join MetaCPAN and GitHub
