@@ -4,7 +4,7 @@ use utf8;
 use Data::Printer;
 
  
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 use_ok 'Win32::Tracert';
 
@@ -27,7 +27,11 @@ my $number_of_excluded_values;
 my $statistic=Win32::Tracert::Statistics->new(input => $route->path);
 isa_ok($statistic,'Win32::Tracert::Statistics');
 
-foreach my $packetsmp (qw (PACKET1_RT PACKET2_RT PACKET3_RT)){
+my @packet_samples=$statistic->list_packet_samples;
+my $packet_samples_list=join(', ',sort @packet_samples);
+is (scalar(@packet_samples),3,"Found three Packet sample to analyze: $packet_samples_list");
+
+foreach my $packetsmp (@packet_samples){
     ($result,$number_of_excluded_values)=$statistic->average_responsetime_for("$packetsmp");
     eval {($result,$number_of_excluded_values)=$statistic->average_responsetime_for("$packetsmp")};
     ok( defined $result && defined $number_of_excluded_values, "$packetsmp: Average response time is $result for $number_of_excluded_values value(s) excluded");
