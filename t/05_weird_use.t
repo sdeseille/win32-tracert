@@ -4,7 +4,7 @@ use utf8;
 
 
  
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 use_ok 'Win32::Tracert';
 
@@ -38,8 +38,25 @@ SKIP:
     ok(defined $@, "Yes ! Host $target doesn't exist");
 }
 
-
-
 my $route2 = Win32::Tracert->new(circuit => \@trace_out);
 ok(! defined $route2->to_trace->found, 'Yes ! Route undetermined');
+
+# tests for Statistics.pm
+{
+    $tracert_output="./t/trace_tracert.txt";
+    open my $th, '<:encoding(Windows-1252):crlf', "$tracert_output" or die "Impossible de lire le fichier $tracert_output\n";
+    my @trace_out=<$th>;
+    close $th;
+    
+    my $route = Win32::Tracert->new(circuit => \@trace_out);
+    
+    $route->to_trace;
+    
+    use Win32::Tracert::Statistics;
+    eval {my $statistic=Win32::Tracert::Statistics->new();};
+    ok(defined $@, "Yes ! Constructor die if you don't set [input]");
+    
+    eval {my $statistic2 = Win32::Tracert::Statistics->new(input => undef)};
+    ok(defined $@, "Yes ! Constructor die if [input] attribute is not a HASHREF");
+}
 
