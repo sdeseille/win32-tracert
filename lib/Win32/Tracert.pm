@@ -251,3 +251,4 @@ Value returned is a scalar.
 =for :list
 
 * L<Win32::Tracert::Parser>
+* L<Win32::Tracert::Statistics>
