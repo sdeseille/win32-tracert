@@ -7,9 +7,19 @@ use Object::Tiny qw (input);
 
 # ABSTRACT: Permit access to some statistics from determined Win32::Tracert path
 
+#redefine constuctor
+sub new {
+    my $class = shift;
+    my $self  = $class->SUPER::new( @_ );
+    # Extra checking and such
+    die "You must define [input] attribute" if (! defined $self->input);
+    die "Attending HASH REF and got something else ! \n" unless ref($self->input) eq "HASH";
+    
+    return $self;
+}
+
 sub average_responsetime_for{
     my ($self,$packet_sample)=@_;
-    die "Attending HASH REF and got something else ! \n" unless ref($self->input) eq "HASH";
     
     foreach my $ipaddress (keys %{$self->input}){
         my %responsetime_sample=map {$_->{HOPID} => _rounding_value_to_1($_->{$packet_sample})} @{$self->input->{$ipaddress}{HOPS}};
