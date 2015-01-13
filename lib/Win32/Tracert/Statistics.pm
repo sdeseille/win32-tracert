@@ -85,3 +85,79 @@ sub _responsetime_values_excluded{
 }
 
 1;
+
+=encoding utf8
+
+=head1 SYNOPSIS
+
+    use Win32::Tracert;
+    use Win32::Tracert::Statistics;
+
+    my $target = "127.0.0.1";
+    my $route = Win32::Tracert->new(destination => "$target");
+    my $result;
+    my $number_of_excluded_values;
+    
+    if ($route->to_trace->found){
+        my $statistic=Win32::Tracert::Statistics->new(input => $route->path);
+        foreach my $packetsmp ($statistic->list_packet_samples){
+            ($result,$number_of_excluded_values)=$statistic->average_responsetime_for("$packetsmp");
+            print "$packetsmp: Average response time is $result with $number_of_excluded_values value(s) excluded\n";
+        }
+    }
+    
+    
+    
+    
+=head2 Attributes
+    
+=over 1
+
+=item *input
+
+This attribute is used as argument before creating object.
+It contain the result of path method from route object.
+The result must be a hashtable and dereferenced
+
+=back
+
+=method average_responsetime_for
+
+This method take a packet sample name as argument and 
+return a list of two value: 
+
+=over 2
+
+=item 1) average responsetime for selected packet sample,
+=item 2) number of value exluded from calculated average responsetime,
+
+=back
+
+You can get packet samples list with S<list_packet_samples> method.
+
+=method average_responsetime_global
+
+This method return a list of two value: 
+
+=over 2
+
+=item 1) average responsetime from all packet samples,
+=item 2) average number of exluded values from average responsetime calculated,
+
+=back
+
+=method list_packet_samples
+
+This method return a list of named packet samples. 
+By default on Win32 system, Tracert send 3 packets at each hop between
+source to destination. Each value stored in packet sample named
+PACKET1_RT, PACKET2_RT, PACKET3_RT in Win32::Tracert::Parser object.
+In order to offer, in the future, possibility to specify number of
+packet to send it is recommended to use this method. 
+
+=head1 SEE ALSO
+
+=for :list
+
+* L<Win32::Tracert>
+* L<Win32::Tracert::Parser>
