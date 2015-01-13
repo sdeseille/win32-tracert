@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    * Clean POD format. I should verify more often my documentation.
 
 0.009     2015-01-13 18:57:39+01:00 Europe/Paris
     * Get some statistics from Win32::Tracert path

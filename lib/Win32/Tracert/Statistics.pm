@@ -129,6 +129,7 @@ return a list of two value:
 =over 2
 
 =item 1) average responsetime for selected packet sample,
+
 =item 2) number of value exluded from calculated average responsetime,
 
 =back
@@ -142,6 +143,7 @@ This method return a list of two value:
 =over 2
 
 =item 1) average responsetime from all packet samples,
+
 =item 2) average number of exluded values from average responsetime calculated,
 
 =back
@@ -149,11 +151,11 @@ This method return a list of two value:
 =method list_packet_samples
 
 This method return a list of named packet samples. 
-By default on Win32 system, Tracert send 3 packets at each hop between
-source to destination. Each value stored in packet sample named
-PACKET1_RT, PACKET2_RT, PACKET3_RT in Win32::Tracert::Parser object.
-In order to offer, in the future, possibility to specify number of
-packet to send it is recommended to use this method. 
+By default on Win32 system, Tracert send 3 packets at each hop between source to destination.
+
+Each value stored in packet sample named PACKET1_RT, PACKET2_RT, PACKET3_RT in Win32::Tracert::Parser object.
+
+In order to offer, in the future, possibility to specify number of packet to send it is recommended to use this method. 
 
 =head1 SEE ALSO
 
