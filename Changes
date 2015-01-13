@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.010     2015-01-13 20:48:35+01:00 Europe/Paris
     * Clean POD format. I should verify more often my documentation.
 
 0.009     2015-01-13 18:57:39+01:00 Europe/Paris
