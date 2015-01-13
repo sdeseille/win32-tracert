@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.009     2015-01-13 18:57:39+01:00 Europe/Paris
     * Get some statistics from Win32::Tracert path
         - Add Statistics module to the distribution
         - Add 05_statistics.t test file
