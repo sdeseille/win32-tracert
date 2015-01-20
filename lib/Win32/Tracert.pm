@@ -152,7 +152,7 @@ sub found{
         }
         else{
             #route to target undetermined
-            return undef;
+            return;
         }
     }
     else{
