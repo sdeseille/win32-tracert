@@ -75,7 +75,7 @@ sub to_parse{
                           'PACKET3_RT' => $p3_rt,
                            };
             #Each data record is store to table in ascending order 
-            push $tracert_result->{"$ip_targeted"}->{'HOPS'}, $hop_data;
+            push @{$tracert_result->{"$ip_targeted"}->{'HOPS'}}, $hop_data;
             next LINE;
         }
         elsif ($curline =~ /^\s+\d+\s+(?:\*\s+){3}.*$/){
@@ -92,7 +92,7 @@ sub to_parse{
                           'PACKET3_RT' => $p3_rt,
                            };
             #Each data record is store to table in ascending order 
-            push $tracert_result->{"$ip_targeted"}->{'HOPS'}, $hop_data;
+            push @{$tracert_result->{"$ip_targeted"}->{'HOPS'}}, $hop_data;
             next LINE;
         }
         elsif ($curline =~ /^\s+\d+\s+\*\s+(?:\s+(?:\<1|\d+)\sms){2}.*$/){
@@ -124,7 +124,7 @@ sub to_parse{
                           'PACKET3_RT' => $p3_rt,
                            };
             #Each data record is store to table in ascending order 
-            push $tracert_result->{"$ip_targeted"}->{'HOPS'}, $hop_data;
+            push @{$tracert_result->{"$ip_targeted"}->{'HOPS'}}, $hop_data;
             next LINE;
         }
     }
