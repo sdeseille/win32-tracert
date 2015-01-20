@@ -20,6 +20,8 @@ sub new {
 
 sub average_responsetime_for{
     my ($self,$packet_sample)=@_;
+    my $average_responsetime;
+    my $number_of_excluded_values;
     
     foreach my $ipaddress (keys %{$self->input}){
         my %responsetime_sample=map {$_->{HOPID} => _rounding_value_to_1($_->{$packet_sample})} @{$self->input->{$ipaddress}{HOPS}};
@@ -27,11 +29,10 @@ sub average_responsetime_for{
         my @filtered_responsetime_values=_exclude_star_value(@initial_responsetime_values);
         my $sum_responsetime=0;
         map { $sum_responsetime+=$_ } @filtered_responsetime_values;
-        my $average_responsetime=_average_responsetime($sum_responsetime,scalar @filtered_responsetime_values);
-        my $number_of_excluded_values=_responsetime_values_excluded(scalar @initial_responsetime_values, scalar @filtered_responsetime_values);
-        
-        return $average_responsetime, $number_of_excluded_values;
+        $average_responsetime=_average_responsetime($sum_responsetime,scalar @filtered_responsetime_values);
+        $number_of_excluded_values=_responsetime_values_excluded(scalar @initial_responsetime_values, scalar @filtered_responsetime_values);
     }
+    return $average_responsetime, $number_of_excluded_values;
 }
 
 sub average_responsetime_global{
@@ -44,7 +45,7 @@ sub average_responsetime_global{
     my $total_sample=scalar $self->list_packet_samples;
     my $sum_responsetime=0;
     my $sum_of_excluded_values=0;
-    map { $sum_responsetime+=$_->[0], $sum_of_excluded_values+=$_->[1] } values %result;
+    map { $sum_responsetime+=$_->[0] ; $sum_of_excluded_values+=$_->[1] } values %result;
     my $average_responsetime=_average_responsetime($sum_responsetime,$total_sample);
     my $average_number_of_excluded_values=$sum_of_excluded_values / $total_sample;
     
