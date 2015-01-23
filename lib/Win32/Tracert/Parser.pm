@@ -17,6 +17,7 @@ sub to_parse{
     my $tracert_result={};
     my $host_targeted;
     my $ip_targeted;
+    my $witness_line;
 
     LINE:
     foreach my $curline (@{$tracert_outpout}){
@@ -127,7 +128,10 @@ sub to_parse{
             push @{$tracert_result->{"$ip_targeted"}->{'HOPS'}}, $hop_data;
             next LINE;
         }
+        #Debugging purpose
+        $witness_line=$curline;
     }
+    die "Try to trap Win32 specific case: $ip_targeted: $witness_line" if scalar(@{$tracert_result->{"$ip_targeted"}->{'HOPS'}}) < 1;
     return $tracert_result;
 }
 
